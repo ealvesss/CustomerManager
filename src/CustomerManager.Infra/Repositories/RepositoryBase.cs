@@ -2,51 +2,53 @@
 using CustomerManager.Infra.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace CustomerManager.Infra.Repositories
 {
     public class RepositoryBase<T> : IRepositoryBase<T> where T : class
     {
-        protected CustomerManagerContext RepositoryContext { get; set; }
+        protected CustomerManagerContext _repository { get; set; }
 
         public RepositoryBase(CustomerManagerContext context)
         {
-            this.RepositoryContext = context;
+            this._repository = context;
         }
 
-        public void Create(T entity)
+        public async Task Create(T entity)
         {
-            this.RepositoryContext.Set<T>().Add(entity);
+            this._repository.Set<T>().Add(entity);
+            await Save();
+        }
+
+        public async Task Delete(T entity)
+        {
+            this._repository.Set<T>().Remove(entity);
             Save();
         }
 
-        public void Delete(T entity)
+        public async Task<IEnumerable<T>> Get()
         {
-            this.RepositoryContext.Set<T>().Remove(entity);
-            Save();
+            return this._repository.Set<T>().AsNoTracking();
         }
 
-        public IQueryable<T> FindAll()
+        public async Task Update(T entity)
         {
-            return this.RepositoryContext.Set<T>().AsNoTracking();
+            this._repository.Set<T>().Update(entity);
+            await Save();
         }
 
-        public void Update(T entity)
+        public async Task<T> GetBy(Expression<Func<T, bool>> expression)
         {
-            this.RepositoryContext.Set<T>().Update(entity);
-            Save();
+            return await this._repository.Set<T>().FirstOrDefaultAsync(expression);
         }
 
-        public IQueryable<T> FindById(Expression<Func<T, bool>> expression)
+        public virtual async Task Save()
         {
-            return this.RepositoryContext.Set<T>().Where(expression).AsNoTracking();
+            await this._repository.SaveChangesAsync();
         }
 
-        private void Save()
-        {
-            this.RepositoryContext.SaveChanges();
-        }
     }
 }
