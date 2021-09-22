@@ -1,13 +1,16 @@
 ﻿using CustomerManager.Domain.Entities;
 using Refit;
-using System.Collections.Generic;
+using System;
 using System.Threading.Tasks;
 
 namespace CustomerManager.Domain.Services.Interfaces
 {
     public interface IProductService
     {
-        [Get("/api/product/{idProduct}")]
-        Task<IEnumerable<Favorites>> GetFavorites();
+        //refit notation to bind external api
+        [Get("/api/product/{id}/")]
+        Task<Product> GetProduct(Guid id);
+
+
     }
 }

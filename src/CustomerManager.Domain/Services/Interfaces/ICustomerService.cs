@@ -13,9 +13,7 @@ namespace CustomerManager.Domain.Services.Interfaces
 
         Task Delete(Customer entity);
 
-        Task<IEnumerable<Customer>> Get();
-
-        Task<Customer> GetBy(Expression<Func<Customer,bool>> Id);
+        Task <Customer> GetByExpression(Expression<Func<Customer,bool>> Id);
 
         Task<ExecutionResult<Customer>> Update<TValidator>(Customer obj);
     }

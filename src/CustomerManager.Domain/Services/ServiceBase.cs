@@ -41,7 +41,7 @@ namespace CustomerManager.Domain.Services
             throw new NotImplementedException();
         }
 
-        public virtual async Task<T> GetBy(Expression<Func<T,bool>> expression) => await _baseRepository.GetBy(expression);
+        public virtual async Task<T> GetByExpression(Expression<Func<T,bool>> expression) => await _baseRepository.GetByExpression(expression);
 
         public virtual async Task<ExecutionResult<T>> Update<TValidator>(T obj)
         {
@@ -54,14 +54,6 @@ namespace CustomerManager.Domain.Services
 
             return new ExecutionResult<T> { Data = obj, ValidationResult = result };
         }
-
-        public virtual Task<IEnumerable<T>> Get()
-        {
-            //var result = _baseRepository.Get();
-            //return result;
-            throw new NotImplementedException();
-        }
-       
        
         public virtual ValidationResult Validate(T obj, IValidator<T> validator)
         {

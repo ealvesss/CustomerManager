@@ -28,9 +28,16 @@ namespace CustomerManager.Api.Extensions
             services.AddScoped(typeof(IServiceBase<>), typeof(ServiceBase<>));
             services.AddScoped(typeof(IRepositoryBase<>), typeof(RepositoryBase<>));
             services.AddScoped<ICustomerAppService, CustomerAppService>();
+            services.AddScoped<IFavoriteAppService, FavoriteAppService>();
+            //services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ICustomerService, CustomerService>();
+            services.AddScoped<IFavoriteRepository, FavoriteRepository>();
+            services.AddScoped<IFavoriteService, FavoriteService>();
 
             services.AddScoped<IValidator<Customer>, CustomerValidator>();
+            services.AddScoped<IValidator<Favorite>, FavoriteValidator>();
+
+            //registering refit via HttpClientFactory
             services.AddRefitClient<IProductService>()
                     .ConfigureHttpClient(c => c.BaseAddress = new Uri("http://challenge-api.luizalabs.com"));
 

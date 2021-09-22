@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CustomerManager.Application.Dtos
 {
-    public class CustomerDto
+    public class CustomerResponseDto
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

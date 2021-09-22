@@ -12,9 +12,9 @@ namespace CustomerManager.Domain.Services.Interfaces
 
         Task Delete(T entity);
 
-        Task<IEnumerable<T>> Get();
+        //Task<IEnumerable<T>> Get();
 
-        Task<T> GetBy(Expression<Func<T,bool>> Id);
+        Task<T> GetByExpression(Expression<Func<T,bool>> Id);
 
         Task<ExecutionResult<T>> Update<TValidator>(T obj);
 

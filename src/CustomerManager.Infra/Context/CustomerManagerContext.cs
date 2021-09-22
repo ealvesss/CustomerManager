@@ -6,7 +6,7 @@ namespace CustomerManager.Infra.Context
     public class CustomerManagerContext : DbContext
     {
         public DbSet<Customer> Customer { get; set; }
-        public DbSet<Favorites> Favorites { get; set; }
+        public DbSet<Favorite> Favorite { get; set; }
 
         public CustomerManagerContext(DbContextOptions<CustomerManagerContext> options)
         : base(options)

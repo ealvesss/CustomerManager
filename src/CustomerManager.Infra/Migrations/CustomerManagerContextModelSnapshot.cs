@@ -36,20 +36,18 @@ namespace CustomerManager.Infra.Migrations
                     b.ToTable("Customer");
                 });
 
-            modelBuilder.Entity("CustomerManager.Domain.Entities.Favorites", b =>
+            modelBuilder.Entity("CustomerManager.Domain.Entities.Favorite", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("CustomerId")
+                    b.Property<Guid>("CustomerId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CustomerId");
-
-                    b.ToTable("Favorites");
+                    b.ToTable("Favorite");
                 });
 
             modelBuilder.Entity("CustomerManager.Domain.Entities.Product", b =>
@@ -58,48 +56,27 @@ namespace CustomerManager.Infra.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Brand")
-                        .HasColumnType("text");
-
-                    b.Property<Guid?>("FavoritesId")
+                    b.Property<Guid>("ExternalProductId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Image")
-                        .HasColumnType("text");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("numeric");
-
-                    b.Property<double>("ReviewScore")
-                        .HasColumnType("double precision");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("text");
+                    b.Property<Guid?>("FavoriteId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FavoritesId");
+                    b.HasIndex("FavoriteId");
 
                     b.ToTable("Product");
                 });
 
-            modelBuilder.Entity("CustomerManager.Domain.Entities.Favorites", b =>
-                {
-                    b.HasOne("CustomerManager.Domain.Entities.Customer", "Customer")
-                        .WithMany()
-                        .HasForeignKey("CustomerId");
-
-                    b.Navigation("Customer");
-                });
-
             modelBuilder.Entity("CustomerManager.Domain.Entities.Product", b =>
                 {
-                    b.HasOne("CustomerManager.Domain.Entities.Favorites", null)
+                    b.HasOne("CustomerManager.Domain.Entities.Favorite", null)
                         .WithMany("Products")
-                        .HasForeignKey("FavoritesId");
+                        .HasForeignKey("FavoriteId");
                 });
 
-            modelBuilder.Entity("CustomerManager.Domain.Entities.Favorites", b =>
+            modelBuilder.Entity("CustomerManager.Domain.Entities.Favorite", b =>
                 {
                     b.Navigation("Products");
                 });

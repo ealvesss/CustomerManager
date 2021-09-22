@@ -3,13 +3,12 @@ using CustomerManager.Application.Services.Interfaces;
 using CustomerManager.Domain.Services.Validator;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace CustomerManager.Api.Controllers
 {
     [ApiController]
-    [Route("v1/customer")]
+    [Route("api/v1/customer")]
     public class CustomerController : ControllerBase
     {
         private readonly ICustomerAppService _service;
@@ -20,7 +19,7 @@ namespace CustomerManager.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] CustomerDto customer)
+        public async Task<IActionResult> Post([FromBody] CustomerRequestDto customer)
         {
             if (customer == null)
                 return BadRequest();
@@ -33,30 +32,16 @@ namespace CustomerManager.Api.Controllers
             return Ok(result.Data.Id);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetById([FromQuery] Guid Id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
         {
-            //todo: fix param
-
-            if (Id == Guid.Empty)
+            if (id == Guid.Empty)
                 return BadRequest();
 
-            var result = await _service.GetById(Id);
+            var result = await _service.GetById(id);
 
             if (result == null)
                 return NotFound("Customer Not Found!");
-
-            return Ok(result);
-        }
-
-        [HttpGet("all")]
-        public async Task<IActionResult> Get()
-        {
-
-            var result = await _service.Get();
-
-            if (result == null)
-                return NotFound("No Customer Found!");
 
             return Ok(result);
         }
@@ -82,8 +67,6 @@ namespace CustomerManager.Api.Controllers
 
         //    return Ok();
         //}
-
-
 
     }
 }

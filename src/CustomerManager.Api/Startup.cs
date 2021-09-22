@@ -29,6 +29,7 @@ namespace CustomerMangerApi
             var mapperConfig = new MapperConfiguration(mc =>
             {
                 mc.AddProfile(new CustomerProfile());
+                mc.AddProfile(new FavoriteProfile());
             });
 
             IMapper mapper = mapperConfig.CreateMapper();

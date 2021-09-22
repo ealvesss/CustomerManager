@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CustomerManager.Domain\CustomerManager.Domain.csproj" />
+    <ProjectReference Include="..\CustomerManager.Infra\CustomerManager.Infra.csproj" />
   </ItemGroup>
 
 </Project>

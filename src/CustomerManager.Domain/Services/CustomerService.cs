@@ -4,7 +4,6 @@ using CustomerManager.Domain.Services.Interfaces;
 using FluentValidation;
 using FluentValidation.Results;
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -30,7 +29,7 @@ namespace CustomerManager.Domain.Services
             if (!validationResult.IsValid)
                 return new ExecutionResult<Customer> { Data = obj, ValidationResult = validationResult };
 
-            var existsCustomer = await _baseRepository.GetBy(c => c.Email == obj.Email);
+            var existsCustomer = await _baseRepository.GetByExpression(c => c.Email == obj.Email);
 
             if (existsCustomer != null)
             {
@@ -46,18 +45,12 @@ namespace CustomerManager.Domain.Services
 
         public override async Task Delete(Customer entity)
         {
-            await _baseRepository.Delete(entity);
+            await _baseRepository.Delete(entity.Id);
         }
 
-        public override async Task<IEnumerable<Customer>> Get()
+        public override async Task<Customer> GetByExpression(Expression<Func<Customer, bool>> expression)
         {
-            return await _baseRepository.Get();
-        }
-
-
-        public override async Task<Customer> GetBy(Expression<Func<Customer, bool>> expression)
-        {
-            return await _baseRepository.GetBy(expression);
+            return await _baseRepository.GetByExpression(expression);
         }
 
         public override Task<ExecutionResult<Customer>> Update<TValidator>(Customer obj)
