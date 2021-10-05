@@ -1,52 +1,35 @@
-﻿using CustomerManager.Domain.Services.Interfaces;
+﻿using CustomerManager.Domain.Entities;
+using CustomerManager.Domain.Services.Interfaces;
 using CustomerManager.Infra.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Linq;
-using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace CustomerManager.Infra.Repositories
 {
-    public class RepositoryBase<T> : IRepositoryBase<T> where T : class
+    public class RepositoryBase<T> : IRepositoryBase<T> where T : EntityBase
     {
-        protected CustomerManagerContext RepositoryContext { get; set; }
+        protected CustomerManagerContext _repository { get; set; }
 
         public RepositoryBase(CustomerManagerContext context)
         {
-            this.RepositoryContext = context;
+            this._repository = context;
         }
 
-        public void Create(T entity)
+        public virtual async Task Create(T entity)
         {
-            this.RepositoryContext.Set<T>().Add(entity);
-            Save();
+            await this._repository.Set<T>().AddAsync(entity);
         }
 
-        public void Delete(T entity)
+        public virtual async Task Delete(T entity)
         {
-            this.RepositoryContext.Set<T>().Remove(entity);
-            Save();
+            if (entity != null) await Task.FromResult(this._repository.Set<T>().Remove(entity));
         }
 
-        public IQueryable<T> FindAll()
+        public virtual async Task<T> GetById(Guid id)
         {
-            return this.RepositoryContext.Set<T>().AsNoTracking();
+            return await this._repository.Set<T>().AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public void Update(T entity)
-        {
-            this.RepositoryContext.Set<T>().Update(entity);
-            Save();
-        }
-
-        public IQueryable<T> FindById(Expression<Func<T, bool>> expression)
-        {
-            return this.RepositoryContext.Set<T>().Where(expression).AsNoTracking();
-        }
-
-        private void Save()
-        {
-            this.RepositoryContext.SaveChanges();
-        }
     }
 }
