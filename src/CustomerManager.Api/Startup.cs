@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using System.Threading.Tasks;
 
 namespace CustomerMangerApi
@@ -25,6 +26,25 @@ namespace CustomerMangerApi
         {
             services.AddControllers();
             services.InjectDependencies(Configuration);
+            services.AddSwaggerGen(c => {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "V1",
+                    Title = "Customer Manager",
+                    Description = "Api to manage Cutomer Favorites",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Elton Alves",
+                        Email = "eltim.alves@gmail.com",
+                        Url = new System.Uri("https://www.linkedin.com/in/eltonalves/")
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "",
+                        Url = new System.Uri("https://github.com/EltonAlvess/CustomerManager/blob/main/LICENSE.md"),
+                    }
+                });
+            });
 
             var mapperConfig = new MapperConfiguration(mc =>
             {
@@ -47,11 +67,19 @@ namespace CustomerMangerApi
                 ApplyPendingMigration(app);
             }
 
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Customer Manager V1");
+                c.RoutePrefix = string.Empty;
+            });
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
             app.UseAuthorization();
+
 
 
             app.UseEndpoints(endpoints =>

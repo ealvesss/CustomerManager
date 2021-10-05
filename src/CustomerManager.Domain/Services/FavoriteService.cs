@@ -120,6 +120,7 @@ namespace CustomerManager.Domain.Services
         {
             var result = await _favoriteRepository.GetById(id);
 
+
             return result;
         }
 
