@@ -29,7 +29,7 @@ namespace CustomerManager.Api.Controllers
             if (!result.ValidationResult.IsValid)
                 return BadRequest(result.ValidationResult.ToString(Environment.NewLine));
 
-            return Ok(result.Data.FavoriteId);
+            return Ok(result.Data.Id);
         }
 
         [HttpGet("{id}")]
@@ -40,6 +40,42 @@ namespace CustomerManager.Api.Controllers
             if (result == null)
                 return NotFound("Favorite not found!");
             
+            return Ok(result);
+        }
+
+        [HttpGet("customer/{id}")]
+        public async Task<IActionResult> GetByCustomerId(Guid id)
+        {
+            var result = await _service.GetByCustomerId(id);
+
+            if (result == null)
+                return NotFound("Favorite not found!");
+
+            return Ok(result);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            if (id == Guid.Empty)
+                return BadRequest();
+
+            var result = await this._service.Delete(id);
+
+            if (result.ValidationResult.Errors.Count > 0)
+                return BadRequest(result);
+            
+            return NoContent();
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Put([FromBody] FavoriteRequestUpdateDto entity)
+        {
+            var result = await _service.Update<FavoriteValidator>(entity);
+
+            if (!result.ValidationResult.IsValid) 
+                return BadRequest();
+
             return Ok(result);
         }
     }

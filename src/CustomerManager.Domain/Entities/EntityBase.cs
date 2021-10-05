@@ -9,12 +9,6 @@ namespace CustomerManager.Domain.Entities
         public EntityBase()
         {
             this.Id = Guid.NewGuid();
-
-        }
-
-        public bool Equals(EntityBase other)
-        {
-            return Id == other.Id;
         }
     }
 }

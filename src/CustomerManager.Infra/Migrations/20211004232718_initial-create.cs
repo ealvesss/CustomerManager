@@ -38,7 +38,7 @@ namespace CustomerManager.Infra.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     ExternalProductId = table.Column<Guid>(type: "uuid", nullable: false),
-                    FavoriteId = table.Column<Guid>(type: "uuid", nullable: true)
+                    FavoriteId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -48,7 +48,7 @@ namespace CustomerManager.Infra.Migrations
                         column: x => x.FavoriteId,
                         principalTable: "Favorite",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

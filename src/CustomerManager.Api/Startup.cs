@@ -30,6 +30,7 @@ namespace CustomerMangerApi
             {
                 mc.AddProfile(new CustomerProfile());
                 mc.AddProfile(new FavoriteProfile());
+                mc.AddProfile(new ProductProfile());
             });
 
             IMapper mapper = mapperConfig.CreateMapper();

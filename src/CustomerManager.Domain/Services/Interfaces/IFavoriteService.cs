@@ -1,6 +1,7 @@
 ﻿using CustomerManager.Domain.Base;
 using CustomerManager.Domain.Entities;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace CustomerManager.Domain.Services.Interfaces
@@ -11,11 +12,9 @@ namespace CustomerManager.Domain.Services.Interfaces
 
         Task Delete(Favorite entity);
 
-        //Task<Favorite> GetByExpression(Expression<Func<Favorite, bool>> Id);
-
         Task<Favorite> GetById(Guid id);
 
-        Task<ExecutionResult<Favorite>> Update<FavoriteValidator>(Favorite obj);
-
+        Task<ExecutionResult<Favorite>> Update<FavoriteValidator>(Favorite obj, IEnumerable<Product> products);
+        Task<Favorite> GetByCustomerId(Guid id);
     }
 }

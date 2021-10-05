@@ -22,17 +22,19 @@ namespace CustomerManager.Api.Extensions
         {
             //inject dbcontext
             var connectionString = config.GetConnectionString("postgres");
-            services.AddDbContext<CustomerManagerContext>(options => options.UseNpgsql(connectionString));
+            services.AddDbContext<CustomerManagerContext>(options => options
+                                                            .UseNpgsql(connectionString)
+                                                            .EnableSensitiveDataLogging());
 
             //Dependency Injection
             services.AddScoped(typeof(IServiceBase<>), typeof(ServiceBase<>));
             services.AddScoped(typeof(IRepositoryBase<>), typeof(RepositoryBase<>));
             services.AddScoped<ICustomerAppService, CustomerAppService>();
             services.AddScoped<IFavoriteAppService, FavoriteAppService>();
-            //services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ICustomerService, CustomerService>();
             services.AddScoped<IFavoriteRepository, FavoriteRepository>();
             services.AddScoped<IFavoriteService, FavoriteService>();
+            services.AddScoped<ICustomerRepository, CustomerRepository>();
 
             services.AddScoped<IValidator<Customer>, CustomerValidator>();
             services.AddScoped<IValidator<Favorite>, FavoriteValidator>();

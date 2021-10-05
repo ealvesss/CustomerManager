@@ -1,16 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="10.1.1" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="10.1.1" />
+		<PackageReference Include="EntityFramework" Version="6.4.4" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.10" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\CustomerManager.Domain\CustomerManager.Domain.csproj" />
-    <ProjectReference Include="..\CustomerManager.Infra\CustomerManager.Infra.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\CustomerManager.Domain\CustomerManager.Domain.csproj" />
+		<ProjectReference Include="..\CustomerManager.Infra\CustomerManager.Infra.csproj" />
+	</ItemGroup>
 
 </Project>

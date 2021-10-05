@@ -9,12 +9,11 @@ namespace CustomerManager.Domain.Services.Interfaces
 {
     public interface ICustomerService
     {
-        Task<ExecutionResult<Customer>> Create<TValidator>(Customer obj);
+        Task<ExecutionResult<Customer>> Create<TValidator>(Customer entity);
 
-        Task Delete(Customer entity);
+        Task<ExecutionResult<Customer>> Delete(Guid id);
+        Task<Customer> GetById(Guid id);
 
-        Task <Customer> GetByExpression(Expression<Func<Customer,bool>> Id);
-
-        Task<ExecutionResult<Customer>> Update<TValidator>(Customer obj);
+        Task<ExecutionResult<Customer>> Update<TValidator>(Customer entity);
     }
 }

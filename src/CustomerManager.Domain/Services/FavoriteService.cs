@@ -6,7 +6,6 @@ using FluentValidation.Results;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace CustomerManager.Domain.Services
@@ -18,8 +17,8 @@ namespace CustomerManager.Domain.Services
         private readonly IValidator<Favorite> _validator;
         private readonly IProductService _productService;
 
-        public FavoriteService(IFavoriteRepository repository, IValidator<Favorite> validator, IProductService productService)
-           : base(null, validator)
+        public FavoriteService(IFavoriteRepository favoriteRepository, IFavoriteRepository repository, IValidator<Favorite> validator, IProductService productService)
+           : base(favoriteRepository, validator)
         {
             _favoriteRepository = repository;
             _validator = validator;
@@ -56,6 +55,19 @@ namespace CustomerManager.Domain.Services
                 return new ExecutionResult<Favorite> { Data = obj, ValidationResult = validationResult };
             }
 
+            foreach (var product in obj.Products)
+            {
+                var existProduct = await GetProduct(product.ExternalProductId);
+
+                if (existProduct == null)
+                {
+                    validationResult.Errors.Add(new ValidationFailure("ProductDoesNotExists", $"Product {product.ExternalProductId} does not exists!"));
+                }
+            }
+
+            if (validationResult.Errors.Count() > 0) return new ExecutionResult<Favorite>() { Data = obj, ValidationResult = validationResult };
+
+
             await _favoriteRepository.Create(obj);
 
             return new ExecutionResult<Favorite>() { Data = obj, ValidationResult = validationResult };
@@ -63,41 +75,65 @@ namespace CustomerManager.Domain.Services
 
         public override async Task Delete(Favorite entity)
         {
-            throw new NotImplementedException();
+            await this._favoriteRepository.Delete(entity);
         }
 
-        public Task<Favorite> GetByExpression(Expression<Func<Favorite, bool>> Id)
+        public async Task<Favorite> GetByCustomerId(Guid id)
         {
-            throw new NotImplementedException();
-        }
-
-        public async Task<Favorite> GetById(Guid id)
-        {
-            var result = await _favoriteRepository.GetById(id);
-
-            List<Product> products = new List<Product>();
-
-            foreach (var product in result.Products)
-            {
-                var itemResult = (Product) await _productService.GetProduct(product.ExternalProductId);
-                products.Add(new Product()
-                {
-                    Brand = itemResult.Brand,
-                    ExternalProductId = product.ExternalProductId,
-                    Image = itemResult.Image,
-                    Price = itemResult.Price,
-                    Title = itemResult.Title
-                });
-            }
-
-            result.Products = products;
+            var result = await _favoriteRepository.GetFavoriteByCustomerId(id);
 
             return result;
         }
 
-        public async Task<ExecutionResult<Favorite>> Update<TValidator>(Favorite obj)
+        public override async Task<Favorite> GetById(Guid id)
         {
-            throw new NotImplementedException();
+            var result = await _favoriteRepository.GetById(id);
+
+            return result;
+        }
+
+        public Task<ExecutionResult<Favorite>> Update<FavoriteValidator>(Favorite entity, IEnumerable<Product> products)
+        {
+            entity.OverwriteProducts(products);
+
+            var validationResult = base.Validate(entity, _validator);
+
+            if (!validationResult.IsValid)
+                return Task.FromResult(new ExecutionResult<Favorite> { Data = entity, ValidationResult = validationResult });
+
+            return Task.FromResult(new ExecutionResult<Favorite> { Data = entity, ValidationResult = validationResult });
+        }
+
+        private async Task<Product> GetProduct(Guid id)
+        {
+            try
+            {
+                return await _productService.GetProduct(id);
+            }
+            catch (Exception)
+            {
+                return default(Product);
+            }
+        }
+
+        public async Task<Favorite> GetDetailById(Guid id)
+        {
+            var result = await _favoriteRepository.GetById(id);
+
+            return result;
+        }
+
+        private async Task<IEnumerable<Product>> GetProducts(List<Guid> products)
+        {
+            var resultProducts = new List<Product>();
+
+            foreach (var prod in products)
+            {
+                var product = await _productService.GetProduct(prod);
+                resultProducts.Add(product);
+            }
+
+            return resultProducts;
         }
     }
 }

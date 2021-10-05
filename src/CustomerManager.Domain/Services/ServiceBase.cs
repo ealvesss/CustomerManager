@@ -4,8 +4,6 @@ using CustomerManager.Domain.Services.Interfaces;
 using FluentValidation;
 using FluentValidation.Results;
 using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace CustomerManager.Domain.Services
@@ -20,7 +18,6 @@ namespace CustomerManager.Domain.Services
             _baseRepository = baseRepository;
             _validator = validator;
         }
-
 
         public virtual Task<ExecutionResult<T>> Create<TValidator>(T obj)
         {
@@ -38,10 +35,10 @@ namespace CustomerManager.Domain.Services
 
         public virtual Task Delete(T entity)
         {
-            throw new NotImplementedException();
+            return _baseRepository.Delete(entity);
         }
 
-        public virtual async Task<T> GetByExpression(Expression<Func<T,bool>> expression) => await _baseRepository.GetByExpression(expression);
+        public virtual async Task<T> GetById(Guid id) => await _baseRepository.GetById(id);
 
         public virtual async Task<ExecutionResult<T>> Update<TValidator>(T obj)
         {
@@ -50,9 +47,7 @@ namespace CustomerManager.Domain.Services
             if (!result.IsValid)
                 return default;
 
-            await _baseRepository.Update(obj);
-
-            return new ExecutionResult<T> { Data = obj, ValidationResult = result };
+            return await Task.FromResult(new ExecutionResult<T> { Data = obj, ValidationResult = result });
         }
        
         public virtual ValidationResult Validate(T obj, IValidator<T> validator)

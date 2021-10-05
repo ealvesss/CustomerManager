@@ -16,7 +16,7 @@ namespace CustomerManager.Infra.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
-                .HasAnnotation("ProductVersion", "5.0.9")
+                .HasAnnotation("ProductVersion", "5.0.10")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
             modelBuilder.Entity("CustomerManager.Domain.Entities.Customer", b =>
@@ -59,7 +59,7 @@ namespace CustomerManager.Infra.Migrations
                     b.Property<Guid>("ExternalProductId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("FavoriteId")
+                    b.Property<Guid>("FavoriteId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
@@ -71,9 +71,13 @@ namespace CustomerManager.Infra.Migrations
 
             modelBuilder.Entity("CustomerManager.Domain.Entities.Product", b =>
                 {
-                    b.HasOne("CustomerManager.Domain.Entities.Favorite", null)
+                    b.HasOne("CustomerManager.Domain.Entities.Favorite", "Favorite")
                         .WithMany("Products")
-                        .HasForeignKey("FavoriteId");
+                        .HasForeignKey("FavoriteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Favorite");
                 });
 
             modelBuilder.Entity("CustomerManager.Domain.Entities.Favorite", b =>

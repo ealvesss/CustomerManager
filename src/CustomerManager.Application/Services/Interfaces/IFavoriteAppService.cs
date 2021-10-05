@@ -9,12 +9,14 @@ namespace CustomerManager.Application.Services.Interfaces
 {
     public interface IFavoriteAppService
     {
-        Task<ExecutionResult<FavoriteResultDto>> Create<TValidator>(FavoriteRequestDto obj);
+        Task<ExecutionResult<FavoriteResponseDto>> Create<TValidator>(FavoriteRequestDto obj);
 
-        Task Delete(Guid id);
+        Task<ExecutionResult<FavoriteResponseDto>> Delete(Guid id);
 
-        Task<FavoriteResultDto> GetById(Guid id);
+        Task<FavoriteResponseDto> GetById(Guid id);
 
-        Task<ExecutionResult<FavoriteResultDto>> Update<TValidator>(Guid id);
+        Task<ExecutionResult<FavoriteResponseDto>> Update<TValidator>(FavoriteRequestUpdateDto entity);
+
+        Task<FavoriteResponseDto> GetByCustomerId(Guid id);
     }
 }

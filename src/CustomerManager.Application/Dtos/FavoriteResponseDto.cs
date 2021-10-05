@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace CustomerManager.Application.Dtos
 {
-    public class FavoriteRequestDto
+    public class FavoriteResponseDto
     {
-        public Guid FavoriteId { get; set; }
+        public Guid Id { get; set; }
         public Guid CustomerId { get; set; }
         public IEnumerable<ProductRequestDto> Products { get; set; }
     }

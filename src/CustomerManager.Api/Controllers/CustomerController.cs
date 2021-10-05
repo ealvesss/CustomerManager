@@ -3,6 +3,7 @@ using CustomerManager.Application.Services.Interfaces;
 using CustomerManager.Domain.Services.Validator;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CustomerManager.Api.Controllers
@@ -11,11 +12,11 @@ namespace CustomerManager.Api.Controllers
     [Route("api/v1/customer")]
     public class CustomerController : ControllerBase
     {
-        private readonly ICustomerAppService _service;
+        private readonly ICustomerAppService _appService;
 
         public CustomerController(ICustomerAppService service)
         {
-            this._service = service;
+            this._appService = service;
         }
 
         [HttpPost]
@@ -24,7 +25,7 @@ namespace CustomerManager.Api.Controllers
             if (customer == null)
                 return BadRequest();
 
-            var result = await _service.Create<CustomerValidator>(customer);
+            var result = await _appService.Create<CustomerValidator>(customer);
 
             if (!result.ValidationResult.IsValid)
                 return BadRequest(result.ValidationResult.ToString(Environment.NewLine));
@@ -38,7 +39,7 @@ namespace CustomerManager.Api.Controllers
             if (id == Guid.Empty)
                 return BadRequest();
 
-            var result = await _service.GetById(id);
+            var result = await _appService.GetById(id);
 
             if (result == null)
                 return NotFound("Customer Not Found!");
@@ -46,27 +47,33 @@ namespace CustomerManager.Api.Controllers
             return Ok(result);
         }
 
-        //[HttpDelete("{id}")]
-        //public IActionResult Delete(Guid Id)
-        //{
-        //    if (Id == Guid.Empty)
-        //        return BadRequest();
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid Id)
+        {
+            if (Id == Guid.Empty)
+                return BadRequest();
 
-        //    _service.Delete();
+            var result = await _appService.Delete<CustomerValidator>(Id);
 
-        //    return Ok();
-        //}
+            if (!result.ValidationResult.IsValid)
+                return BadRequest(result.ValidationResult.ToString(Environment.NewLine));
 
-        //[HttpPut("{id}")]
-        //public IActionResult Put(Guid Id)
-        //{
-        //    if (Id == Guid.Empty)
-        //        return BadRequest();
+            return Ok(result.Data);
+            
+        }
 
-        //    _service.Update();
+        [HttpPut()]
+        public async Task<IActionResult> Put(CustomerRequestDto entity)
+        {
+            if (entity == null)
+                return BadRequest();
 
-        //    return Ok();
-        //}
+            var result = await _appService.Update<CustomerValidator>(entity);
+
+            if (result.ValidationResult.Errors.Count > 0) return BadRequest(result);
+
+            return Ok(result);
+        }
 
     }
 }
