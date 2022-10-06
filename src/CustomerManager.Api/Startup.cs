@@ -52,7 +52,6 @@ namespace CustomerMangerApi
                 mc.AddProfile(new FavoriteProfile());
                 mc.AddProfile(new ProductProfile());
             });
-            Console.WriteLine(mapperConfig);
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
 
